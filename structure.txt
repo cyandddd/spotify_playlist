@@ -1,0 +1,46 @@
+.
+|-- README.md
+|-- package-lock.json
+|-- package.json
+|-- public
+|   |-- favicon.ico
+|   |-- index.html
+|   |-- logo192.png
+|   |-- logo512.png
+|   |-- manifest.json
+|   `-- robots.txt
+|-- src
+|   |-- App.css
+|   |-- App.js
+|   |-- App.test.js
+|   |-- components
+|   |   |-- FilterOptions.js
+|   |   |-- LoginModal.js
+|   |   |-- Playlist.js
+|   |   |-- SearchBar.js
+|   |   |-- SongDetailInPlaylist.js
+|   |   |-- SongDetailInSonglist.js
+|   |   |-- SongList.js
+|   |   |-- SpotifyIntegration.js
+|   |   `-- UserProfile.js
+|   |-- constants
+|   |   `-- spotifyConstants.js
+|   |-- hooks
+|   |   |-- usePlaylist.js
+|   |   |-- useSongSearch.js
+|   |   `-- useSpotifyAuth.js
+|   |-- index.css
+|   |-- index.js
+|   |-- logo.svg
+|   |-- reportWebVitals.js
+|   |-- setupTests.js
+|   |-- styles
+|   |   |-- LoginModal.css
+|   |   `-- UserProfile.css
+|   |-- testing.js
+|   `-- utils
+|       |-- spotifyAuth.js
+|       `-- spotifyService.js
+`-- structure.txt
+
+7 directories, 36 files

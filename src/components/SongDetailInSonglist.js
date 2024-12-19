@@ -1,13 +1,26 @@
 import React from 'react';
 
-const SongDetailInSonglist = ({ song, onAdd, inPlaylist}) => {
+const SongDetailInSonglist = ({ song, onAdd, inPlaylist }) => {
     return (
-        <div>
-            <h2>{song.title || 'Unknown Title'}</h2>
-            <p>Artist: {song.artist || 'Unknown Artist'}</p>
-            <p>Album: {song.album || 'Unknown Album'}</p>
-            <button onClick={() => onAdd(song)} disabled={inPlaylist}>Add Song</button>
+        <div className="song-detail">
+            {song.albumCover && (
+                <img 
+                    src={song.albumCover} 
+                    alt={`${song.album} cover`}
+                    className="album-cover"
+                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                />
+            )}
+            <div className="song-info">
+                <h2>{song.title || 'Unknown Title'}</h2>
+                <p>Artist: {song.artist || 'Unknown Artist'}</p>
+                <p>Album: {song.album || 'Unknown Album'}</p>
+                <button onClick={() => onAdd(song)} disabled={inPlaylist}>
+                    {inPlaylist ? 'Added' : 'Add Song'}
+                </button>
+            </div>
         </div>
     );
 };
+
 export default SongDetailInSonglist;

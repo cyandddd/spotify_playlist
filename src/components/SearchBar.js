@@ -1,49 +1,36 @@
 import React, { useState } from 'react';
+import FilterOptions from './FilterOptions';
 
-const SearchBar = ({ onSearch }) => {
-    const [title, setTitle] = useState('');
-    const [artist, setArtist] = useState('');
-    const [genre, setGenre] = useState('');
-    const [album, setAlbum] = useState('');
-    const [year, setYear] = useState('');
+const SearchBar = ({ onSearch, filters, selectedFilters, onFilterChange }) => {
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleSearch = () => {
-        onSearch({ title, artist, genre, album, year });
+        onSearch(searchQuery);
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
     };
 
     return (
-        <div>
-            <input 
-                type="text" 
-                placeholder="Search for a song..." 
-                value={title} 
-                onChange={(e) => setTitle(e.target.value)}
+        <div className="search-section">
+            <div className="search-bar">
+                <input 
+                    type="text" 
+                    placeholder="Search for songs..." 
+                    value={searchQuery} 
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                />
+                <button onClick={handleSearch}>Search</button>
+            </div>
+            <FilterOptions 
+                filters={filters}
+                selectedFilters={selectedFilters}
+                onFilterChange={onFilterChange}
             />
-            <input 
-                type="text" 
-                placeholder="Artist" 
-                value={artist} 
-                onChange={(e) => setArtist(e.target.value)}
-            />
-            <input 
-                type="text" 
-                placeholder="Genre" 
-                value={genre} 
-                onChange={(e) => setGenre(e.target.value)}
-            />
-            <input 
-                type="text" 
-                placeholder="Album" 
-                value={album} 
-                onChange={(e) => setAlbum(e.target.value)}
-            />
-            <input 
-                type="text" 
-                placeholder="Release Year" 
-                value={year} 
-                onChange={(e) => setYear(e.target.value)}
-            />
-            <button onClick={handleSearch}>Search</button>
         </div>
     );
 };

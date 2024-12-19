@@ -42,7 +42,8 @@ const SongList = ({ songs, onAdd, playlist }) => {
                             song={{
                                 title: song.name,
                                 artist: song.artists[0]?.name,
-                                album: song.album.name
+                                album: song.album.name,
+                                albumCover: song.albumCover
                             }}
                             onAdd={onAdd}
                             inPlaylist={playlist.some(item => (
