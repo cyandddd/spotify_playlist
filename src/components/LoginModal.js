@@ -1,7 +1,25 @@
+/**
+ * LoginModal Component
+ * 
+ * A React component that handles Spotify authentication through a modal interface.
+ * Implements OAuth 2.0 authorization code flow with state parameter for security.
+ * 
+ * Props:
+ * - isOpen: Boolean to control modal visibility
+ * - onClose: Function to handle modal closing
+ * 
+ * Features:
+ * - Secure random state generation
+ * - Spotify scopes configuration
+ * - Authorization URL construction
+ * - User-friendly login interface
+ */
+
 import React from 'react';
 import '../styles/LoginModal.css';
 
 const LoginModal = ({ isOpen, onClose }) => {
+    // Generates random string for OAuth state parameter
     const generateRandomString = (length) => {
         let text = '';
         const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -12,12 +30,14 @@ const LoginModal = ({ isOpen, onClose }) => {
         return text;
     };
 
+    // Handles Spotify OAuth flow initiation
     const handleLogin = () => {
         // Generate state for security
         const state = generateRandomString(16);
         // Store state in localStorage to verify when token returns
         localStorage.setItem('spotify_auth_state', state);
 
+        // Define required Spotify API access scopes
         const scopes = [
             'user-read-private',
             'user-read-email',
@@ -35,9 +55,11 @@ const LoginModal = ({ isOpen, onClose }) => {
             show_dialog: true // Forces the user to approve the app every time
         });
 
+        // Redirect to Spotify authorization page
         window.location.href = 'https://accounts.spotify.com/authorize?' + authUrl.toString();
     };
 
+    // Render modal UI
     return (
         <div className="modal-overlay">
             <div className="login-modal">
@@ -55,4 +77,4 @@ const LoginModal = ({ isOpen, onClose }) => {
     );
 };
 
-export default LoginModal; 
+export default LoginModal;

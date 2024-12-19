@@ -7,7 +7,8 @@ import UserProfile from './components/UserProfile';
 import { useSpotifyAuth } from './hooks/useSpotifyAuth';
 import { usePlaylist } from './hooks/usePlaylist';
 import { useSongSearch } from './hooks/useSongSearch';
-import { SPOTIFY_ENDPOINTS } from './constants/spotifyConstants';
+import { exportPlaylistToSpotify } from './services/spotifyApiService';
+import './styles/Layout.css';
 
 /**
  * Main application component that handles music search, playlist management,
@@ -17,14 +18,12 @@ import { SPOTIFY_ENDPOINTS } from './constants/spotifyConstants';
  * @returns {JSX.Element} The rendered App component
  */
 function App() {
-  // Custom hooks for different functionalities
   const {
     user,
     token,
     isAuthenticated,
     handleLogin,
-    handleLogout,
-    fetchUserProfile
+    handleLogout
   } = useSpotifyAuth();
 
   const {
@@ -40,15 +39,34 @@ function App() {
     selectedFilters,
     handleSearch,
     handleFilterChange
-  } = useSongSearch();
+  } = useSongSearch(playlist);
 
   /**
-   * Handles Spotify authentication and export functionality
-   * @todo Implement export functionality
+   * Handles the export of the current playlist to Spotify
    */
-  const handleExport = () => {
-    // Implement export logic here
-    console.log('Export functionality to be implemented');
+  const handleExport = async () => {
+    if (!isAuthenticated || !user || playlist.length === 0) {
+      alert('Please log in and add songs to your playlist before exporting');
+      return;
+    }
+
+    const playlistName = prompt('Enter a name for your playlist:', 
+      `My Playlist ${new Date().toLocaleDateString()}`);
+    
+    if (!playlistName) return;
+
+    try {
+      await exportPlaylistToSpotify({
+        token,
+        user,
+        playlist,
+        playlistName
+      });
+      alert(`Playlist "${playlistName}" successfully exported to Spotify!`);
+    } catch (error) {
+      console.error('Export error:', error);
+      alert(`Failed to export playlist: ${error.message}`);
+    }
   };
 
   return (
@@ -81,11 +99,11 @@ function App() {
           />
         </div>
         
-        {isAuthenticated && (
-          <SpotifyIntegration 
-            onExport={handleExport} 
-          />
-        )}
+        <SpotifyIntegration 
+          onExport={handleExport}
+          isAuthenticated={isAuthenticated}
+          onAuthenticate={handleLogin}
+        />
       </main>
     </div>
   );

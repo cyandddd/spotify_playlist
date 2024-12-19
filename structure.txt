@@ -24,6 +24,7 @@
 |   |   |-- SpotifyIntegration.js
 |   |   `-- UserProfile.js
 |   |-- constants
+|   |   |-- appConfig.js
 |   |   `-- spotifyConstants.js
 |   |-- hooks
 |   |   |-- usePlaylist.js
@@ -33,14 +34,24 @@
 |   |-- index.js
 |   |-- logo.svg
 |   |-- reportWebVitals.js
+|   |-- services
+|   |   `-- spotifyApi.js
 |   |-- setupTests.js
 |   |-- styles
+|   |   |-- Layout.css
 |   |   |-- LoginModal.css
-|   |   `-- UserProfile.css
+|   |   |-- ScrollableList.css
+|   |   |-- SearchBar.css
+|   |   |-- UserProfile.css
+|   |   `-- components
+|   |       |-- FilterOptions.css
+|   |       `-- SearchBar.css
 |   |-- testing.js
 |   `-- utils
+|       |-- helpers
+|       |   `-- formatters.js
 |       |-- spotifyAuth.js
 |       `-- spotifyService.js
 `-- structure.txt
 
-7 directories, 36 files
+10 directories, 44 files

@@ -1,3 +1,7 @@
+/**
+ * Service for handling Spotify authentication
+ */
+
 export const getAccessToken = async (code) => {
     try {
         const verifier = localStorage.getItem("verifier");

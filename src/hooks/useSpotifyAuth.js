@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { handleCallback } from '../utils/spotifyAuth';
+import { handleCallback } from '../services/spotifyAuthService';
 import { SPOTIFY_ENDPOINTS } from '../constants/spotifyConstants';
 
 /**
@@ -64,10 +64,12 @@ export const useSpotifyAuth = () => {
     };
 
     const handleLogout = () => {
+        // Only remove Spotify-specific items
         localStorage.removeItem('spotify_access_token');
         localStorage.removeItem('spotify_token_timestamp');
         localStorage.removeItem('spotify_refresh_token');
         
+        // Clear any other Spotify-related items
         Object.keys(localStorage).forEach(key => {
             if (key.startsWith('spotify_')) {
                 localStorage.removeItem(key);
@@ -77,7 +79,9 @@ export const useSpotifyAuth = () => {
         setUser(null);
         setToken('');
         setIsAuthenticated(false);
-        window.location.reload();
+        
+        // Don't reload the page to preserve state
+        // window.location.reload();
     };
 
     return {
