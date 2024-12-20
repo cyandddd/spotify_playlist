@@ -15,11 +15,13 @@ import styles from '../styles/FilterOptions.module.css';
  */
 const FilterOptions = ({ filters = {}, selectedFilters = {}, onFilterChange }) => {
   const handleFilterChange = (filterName, value) => {
-    onFilterChange(filterName, value);
+    const singularName = filterName.endsWith('s') ? filterName.slice(0, -1) : filterName;
+    onFilterChange(singularName, value);
   };
 
   const handleClearAll = () => {
-    Object.keys(selectedFilters).forEach(filter => {
+    const filterNames = ['artist', 'album', 'year', 'genre'];
+    filterNames.forEach(filter => {
       onFilterChange(filter, '');
     });
   };
@@ -36,22 +38,27 @@ const FilterOptions = ({ filters = {}, selectedFilters = {}, onFilterChange }) =
   return (
     <div className={styles.filterContainer}>
       <div className={styles.filterOptions}>
-        {filterConfigs.map(filter => (
-          <select
-            key={filter.name}
-            id={filter.name}
-            className={styles.filterSelect}
-            value={selectedFilters[filter.name] || ''}
-            onChange={(e) => handleFilterChange(filter.name, e.target.value)}
-          >
-            <option value="">{filter.label}</option>
-            {filter.options.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        ))}
+        {filterConfigs.map(filter => {
+          const singularName = filter.name.endsWith('s') ? filter.name.slice(0, -1) : filter.name;
+          const currentValue = selectedFilters[singularName] || '';
+          
+          return (
+            <select
+              key={filter.name}
+              id={filter.name}
+              className={styles.filterSelect}
+              value={currentValue}
+              onChange={(e) => handleFilterChange(filter.name, e.target.value)}
+            >
+              <option value="" disabled>{`${filter.label}`}</option>
+              {filter.options.length > 0 && filter.options.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          );
+        })}
         {Object.values(selectedFilters).some(value => value) && (
           <button 
             onClick={handleClearAll}
@@ -59,7 +66,6 @@ const FilterOptions = ({ filters = {}, selectedFilters = {}, onFilterChange }) =
             className={styles.clearButton}
             aria-label="Clear all filters"
           >
-            
           </button>
         )}
       </div>

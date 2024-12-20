@@ -1,10 +1,23 @@
-.App {
+html, body {
+    margin: 0;
+    padding: 0;
     min-height: 100vh;
     background: linear-gradient(135deg, #f2fbfe 0%, #ebb6c1 100%);
+    background-attachment: fixed;
+}
+
+.App {
+    min-height: 100vh;
+    width: 100%;
     font-family: 'Space Grotesk', sans-serif;
 }
 
 .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
     display: grid;
     grid-template-columns: 2fr 5fr 2fr;
     gap: 2rem;
@@ -22,22 +35,34 @@
 }
 
 .content-wrapper {
+    margin-top: 80px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 2rem;
     padding: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
     max-width: 1400px;
-    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .scrollable-container {
     height: calc(100vh - 250px);
     overflow-y: auto;
+    overflow-x: hidden;
     border: 1px solid rgba(232, 82, 129, 0.2);
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.8);
     padding: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.scrollable-container > * {
+    max-width: 100%;
 }
 
 .exportButton {
@@ -45,21 +70,23 @@
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
-    background: #e85281;
+    background: #ebbc4b;
     color: #f2fbfe;
-    padding: 1rem 3rem;
+    padding: 0.75rem 2rem;
     border: none;
-    border-radius: 2rem;
-    font-size: 1.2rem;
+    border-radius: 1.5rem;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     box-shadow: 0 4px 15px rgba(232, 82, 129, 0.3);
 }
 
 .exportButton:hover {
-    background: #ebbc4b;
+    background: #e85281;
     transform: translateX(-50%) translateY(-2px);
     box-shadow: 0 6px 20px rgba(235, 188, 75, 0.4);
 }
@@ -67,4 +94,7 @@
 .content-wrapper h2 {
     margin-bottom: 1rem;
     color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 } 

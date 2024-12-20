@@ -1,23 +1,36 @@
 .scrollable-container {
   background: rgba(242, 251, 254, 0.8);
   border-radius: 1rem;
-  padding: 1.5rem;
+  /* padding: 1rem; */
   height: calc(100vh - 200px);
   overflow-y: auto;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(235, 182, 193, 0.3);
 }
 
+h2 {
+  margin-top: 0;
+}
+
+
+.scrollable-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+}
+
 .scrollable-list-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.2rem;
   margin-bottom: 1rem;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 0.5rem;
   transition: all 0.3s ease;
-  border: 1px solid rgba(232, 82, 129, 0.1);
+  width: 100%;
+  /* border: 1px solid rgba(232, 82, 129, 0.1); */
 }
 
 .scrollable-list-item:hover {

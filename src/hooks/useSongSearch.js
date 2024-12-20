@@ -87,9 +87,11 @@ export const useSongSearch = (currentPlaylist = []) => {
     };
 
     const handleFilterChange = (filterType, value) => {
+        console.log('Filter changed:', filterType, value);
+        const filterKey = filterType.endsWith('s') ? filterType.slice(0, -1) : filterType;
         setSelectedFilters(prev => ({
             ...prev,
-            [filterType]: value
+            [filterKey]: value
         }));
     };
 
@@ -121,37 +123,49 @@ export const useSongSearch = (currentPlaylist = []) => {
 
     // Apply filters and reordering whenever songs, selectedFilters, or playlist changes
     useEffect(() => {
+        console.log('Initial songs:', songs);
+        console.log('Selected filters:', selectedFilters);
         let filtered = songs;
         
         if (selectedFilters.artist) {
             filtered = filtered.filter(song => 
-                song.artists.some(artist => artist.name === selectedFilters.artist)
+                song.artists.some(artist => 
+                    artist.name.toLowerCase() === selectedFilters.artist.toLowerCase()
+                )
             );
+            console.log('Filtered by artist:', filtered);
         }
         
         if (selectedFilters.album) {
             filtered = filtered.filter(song => 
-                song.album.name === selectedFilters.album
+                song.album.name.toLowerCase() === selectedFilters.album.toLowerCase()
             );
+            console.log('Filtered by album:', filtered);
         }
         
         if (selectedFilters.year) {
             filtered = filtered.filter(song => 
                 song.releaseDate?.startsWith(selectedFilters.year)
             );
+            console.log('Filtered by year:', filtered);
         }
         
         if (selectedFilters.genre) {
             filtered = filtered.filter(song => 
-                song.genres.includes(selectedFilters.genre)
+                song.genres.some(genre => 
+                    genre.toLowerCase() === selectedFilters.genre.toLowerCase()
+                )
             );
+            console.log('Filtered by genre:', filtered);
         }
         
         // Reorder the filtered songs using the current playlist from props
         const reorderedSongs = reorderSongsBasedOnPlaylist(filtered, currentPlaylist);
         
+        console.log('Filtered songs updated:', reorderedSongs);
+        
         setFilteredSongs(reorderedSongs);
-    }, [songs, selectedFilters, currentPlaylist]); // Use currentPlaylist as dependency
+    }, [songs, selectedFilters, currentPlaylist]);
 
     return {
         songs,

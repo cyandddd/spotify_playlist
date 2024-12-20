@@ -38,7 +38,7 @@ const SpotifyIntegration = ({ onAuthenticate, onExport, isAuthenticated }) => {
                     Connect to Spotify
                 </button>
             ) : (
-                <button onClick={onExport}>
+                <button className="exportButton" onClick={onExport}>
                     Export Playlist to Spotify
                 </button>
             )}

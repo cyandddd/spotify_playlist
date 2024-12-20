@@ -29,7 +29,8 @@ export const usePlaylist = () => {
             // Check if song already exists in playlist
             const exists = prevPlaylist.some(item => 
                 item.title === songToAdd.title && 
-                item.artist === songToAdd.artist
+                item.artist === songToAdd.artist &&
+                item.album === songToAdd.album
             );
 
             if (!exists) {

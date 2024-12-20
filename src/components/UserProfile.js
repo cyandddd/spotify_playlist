@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/UserProfile.css';
+import spotifyIcon from '../assets/spotify-icon.svg';
 
 const UserProfile = ({ user, onLogin, onLogout }) => {
     if (!user) {
@@ -9,7 +10,8 @@ const UserProfile = ({ user, onLogin, onLogout }) => {
                     className="loginButton" 
                     onClick={onLogin}
                 >
-                    Login with Spotify
+                    <img src={spotifyIcon} alt="Spotify" className="spotify-icon" />
+                    <span>Login</span>
                 </button>
             </div>
         );
@@ -19,7 +21,7 @@ const UserProfile = ({ user, onLogin, onLogout }) => {
     const displayName = user.display_name || 'Spotify User';
 
     return (
-        <div className="profileContainer">
+        <div className="profileContainer loggedIn">
             <img 
                 src={avatarUrl} 
                 alt={`${displayName}'s avatar`} 

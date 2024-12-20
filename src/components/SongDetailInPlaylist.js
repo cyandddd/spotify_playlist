@@ -1,24 +1,31 @@
 import React from 'react';
+import styles from '../styles/SongDetailInPlaylist.module.css';
 
 const SongDetailInPlaylist = ({ song, onRemove }) => {
     return (
-        <div className="song-detail">
-            {song.albumCover && (
-                <img 
-                    src={song.albumCover} 
-                    alt={`${song.album} cover`}
-                    className="album-cover"
-                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                />
-            )}
-            <div className="song-info">
-                <h2>{song.title || 'Unknown Title'}</h2>
-                <p>Artist: {song.artist || 'Unknown Artist'}</p>
-                <p>Album: {song.album || 'Unknown Album'}</p>
-                <button onClick={() => onRemove(song)}>Remove Song</button>
+        <div className={styles.songDetail}>
+            <div className={styles.albumCoverSection}>
+                {song.albumCover && (
+                    <img 
+                        src={song.albumCover} 
+                        alt={`${song.album} cover`}
+                        className={styles.albumCover}
+                    />
+                )}
+            </div>
+            <div className={styles.songInfo}>
+                <h2 className={styles.title}>{song.title || 'Unknown Title'}</h2>
+                <p className={styles.artist}>Artist: {song.artist || 'Unknown Artist'}</p>
+                <p className={styles.album}>Album: {song.album || 'Unknown Album'}</p>
+            </div>
+            <div className={styles.removeSection}>
+                <button className={styles.removeButton} onClick={() => onRemove(song)}>
+                    Remove
+                </button>
             </div>
         </div>
     );
 };
 
 export default SongDetailInPlaylist;
+
