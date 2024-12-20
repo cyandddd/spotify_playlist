@@ -19,7 +19,6 @@ import React from 'react';
 import '../styles/LoginModal.css';
 
 const LoginModal = ({ isOpen, onClose }) => {
-    // Generates random string for OAuth state parameter
     const generateRandomString = (length) => {
         let text = '';
         const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -30,14 +29,10 @@ const LoginModal = ({ isOpen, onClose }) => {
         return text;
     };
 
-    // Handles Spotify OAuth flow initiation
     const handleLogin = () => {
-        // Generate state for security
         const state = generateRandomString(16);
-        // Store state in localStorage to verify when token returns
         localStorage.setItem('spotify_auth_state', state);
 
-        // Define required Spotify API access scopes
         const scopes = [
             'user-read-private',
             'user-read-email',
@@ -45,32 +40,31 @@ const LoginModal = ({ isOpen, onClose }) => {
             'playlist-modify-private'
         ].join(' ');
 
-        // Construct authorization URL with all required parameters
         const authUrl = new URLSearchParams({
             response_type: 'code',
             client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
             scope: scopes,
             redirect_uri: process.env.REACT_APP_REDIRECT_URI,
             state: state,
-            show_dialog: true // Forces the user to approve the app every time
+            show_dialog: true
         });
 
-        // Redirect to Spotify authorization page
         window.location.href = 'https://accounts.spotify.com/authorize?' + authUrl.toString();
     };
 
-    // Render modal UI
+    if (!isOpen) return null;
+
     return (
-        <div className="modal-overlay">
-            <div className="login-modal">
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="login-modal" onClick={e => e.stopPropagation()}>
                 <button className="close-btn" onClick={onClose}>×</button>
-                <h2>Connect with Spotify</h2>
-                <p>Log in to create and save playlists to your Spotify account.</p>
+                <h2>Welcome to Jamming</h2>
+                <p>Connect with Spotify to create and manage your playlists. Discover and save your favorite tracks with ease.</p>
                 <button 
                     className="spotify-auth-btn"
                     onClick={handleLogin}
                 >
-                    Continue with Spotify
+                    Connect with Spotify
                 </button>
             </div>
         </div>

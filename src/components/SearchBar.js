@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import FilterOptions from './FilterOptions';
 import { APP_CONFIG, ERROR_MESSAGES } from '../constants/appConfig';
 import useDebounce from '../hooks/useDebounce';
+import styles from '../styles/SearchBar.module.css';
 
-// SearchBar component handles song search with filters and debounced input
-function SearchBar({ onSearch, filters = {}, selectedFilters = {}, onFilterChange }) {
+// SearchBar component handles song search with debounced input
+function SearchBar({ onSearch }) {
   // Track search input value
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -31,7 +31,7 @@ function SearchBar({ onSearch, filters = {}, selectedFilters = {}, onFilterChang
   };
 
   return (
-    <div>
+    <div className={styles.searchBar}>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -40,8 +40,11 @@ function SearchBar({ onSearch, filters = {}, selectedFilters = {}, onFilterChang
           placeholder="Search for songs..."
           aria-label="Search for songs"
         />
-        <button type="submit">
-          Search
+        <button type="submit" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
         </button>
       </form>
 
@@ -49,13 +52,6 @@ function SearchBar({ onSearch, filters = {}, selectedFilters = {}, onFilterChang
       {searchTerm.length > 0 && searchTerm.length < APP_CONFIG.SEARCH.MIN_QUERY_LENGTH && (
         <p>{ERROR_MESSAGES.SEARCH.TOO_SHORT}</p>
       )}
-
-      {/* Render filter options */}
-      <FilterOptions
-        filters={filters}
-        selectedFilters={selectedFilters}
-        onFilterChange={onFilterChange}
-      />
     </div>
   );
 }

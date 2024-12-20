@@ -1,50 +1,78 @@
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
+    inset: 0;
+    background-color: rgba(179, 156, 157, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    backdrop-filter: blur(5px);
+    isolation: isolate;
 }
 
 .login-modal {
-    background: #282828;
-    padding: 30px;
-    border-radius: 8px;
+    background: rgba(242, 251, 254, 0.95);
+    padding: 2.5rem;
+    border-radius: 2rem;
     width: 400px;
     position: relative;
-    color: white;
+    color: #b39c9d;
     text-align: center;
+    box-shadow: 0 4px 15px rgba(179, 156, 157, 0.2);
 }
 
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 1rem;
+    right: 1rem;
     background: none;
     border: none;
-    color: #fff;
-    font-size: 24px;
+    color: #e85281;
+    font-size: 1.5rem;
     cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: rgba(232, 82, 129, 0.1);
+    transform: rotate(90deg);
 }
 
 .spotify-auth-btn {
-    background-color: #1DB954;
-    color: white;
+    background: #e85281;
+    color: #f2fbfe;
     border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 20px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .spotify-auth-btn:hover {
-    background-color: #1ed760;
+    background: #ebbc4b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(235, 188, 75, 0.3);
+}
+
+.login-modal h2 {
+    color: #e85281;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.login-modal p {
+    color: #b39c9d;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
 } 

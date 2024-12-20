@@ -1,27 +1,16 @@
-import React, { useState } from 'react';
-import LoginModal from './LoginModal';
-import { useSpotifyAuth } from '../hooks/useSpotifyAuth';
+import React from 'react';
 import '../styles/UserProfile.css';
 
-const UserProfile = () => {
-    const [showLoginModal, setShowLoginModal] = useState(false);
-    const { user, handleLogout } = useSpotifyAuth();
-
+const UserProfile = ({ user, onLogin, onLogout }) => {
     if (!user) {
         return (
-            <div className="user-profile">
+            <div className="profileContainer">
                 <button 
-                    className="login-button" 
-                    onClick={() => setShowLoginModal(true)}
+                    className="loginButton" 
+                    onClick={onLogin}
                 >
                     Login with Spotify
                 </button>
-                {showLoginModal && (
-                    <LoginModal 
-                        isOpen={showLoginModal} 
-                        onClose={() => setShowLoginModal(false)} 
-                    />
-                )}
             </div>
         );
     }
@@ -30,18 +19,16 @@ const UserProfile = () => {
     const displayName = user.display_name || 'Spotify User';
 
     return (
-        <div className="user-profile">
-            <div className="avatar-container">
-                <img 
-                    src={avatarUrl} 
-                    alt={`${displayName}'s avatar`} 
-                    className="user-avatar"
-                />
-            </div>
-            <span className="user-name">{displayName}</span>
+        <div className="profileContainer">
+            <img 
+                src={avatarUrl} 
+                alt={`${displayName}'s avatar`} 
+                className="avatar"
+            />
+            <span className="userName">{displayName}</span>
             <button 
-                className="logout-button" 
-                onClick={handleLogout}
+                className="logoutButton" 
+                onClick={onLogout}
             >
                 Logout
             </button>

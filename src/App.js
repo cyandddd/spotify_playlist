@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SearchBar from './components/SearchBar';
+import FilterOptions from './components/FilterOptions';
 import SongList from './components/SongList';
 import Playlist from './components/Playlist';
 import SpotifyIntegration from './components/SpotifyIntegration';
 import UserProfile from './components/UserProfile';
+import LoginModal from './components/LoginModal';
 import { useSpotifyAuth } from './hooks/useSpotifyAuth';
 import { usePlaylist } from './hooks/usePlaylist';
 import { useSongSearch } from './hooks/useSongSearch';
@@ -18,6 +20,8 @@ import './styles/Layout.css';
  * @returns {JSX.Element} The rendered App component
  */
 function App() {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  
   const {
     user,
     token,
@@ -72,21 +76,24 @@ function App() {
   return (
     <div className="App">
       <header className="header">
+        <SearchBar 
+          onSearch={handleSearch}
+        />
+        <div className="filter-options">
+          <FilterOptions
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
         <UserProfile 
           user={user}
-          onLogin={handleLogin}
+          onLogin={() => setShowLoginModal(true)}
           onLogout={handleLogout}
         />
       </header>
       
       <main className="main-content">
-        <SearchBar 
-          onSearch={handleSearch}
-          filters={filters}
-          selectedFilters={selectedFilters}
-          onFilterChange={handleFilterChange}
-        />
-        
         <div className="content-wrapper">
           <SongList 
             songs={filteredSongs} 
@@ -102,9 +109,14 @@ function App() {
         <SpotifyIntegration 
           onExport={handleExport}
           isAuthenticated={isAuthenticated}
-          onAuthenticate={handleLogin}
+          onAuthenticate={() => setShowLoginModal(true)}
         />
       </main>
+
+      <LoginModal 
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </div>
   );
 }
