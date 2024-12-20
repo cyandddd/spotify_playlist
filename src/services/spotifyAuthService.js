@@ -22,8 +22,9 @@ export const getAccessToken = async (code) => {
             },
             body: params
         });
-
+        console.log('Token response:', result);
         const { access_token, refresh_token } = await result.json();
+        console.log('Token data:', { access_token, refresh_token });
         
         // Store tokens
         localStorage.setItem("spotify_access_token", access_token);

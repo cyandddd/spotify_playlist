@@ -36,18 +36,22 @@ const getArtistGenres = async (artistId) => {
     }
 };
 
-export const searchTracks = async (title) => {
+export const searchTracks = async (title, nextUrl = null) => {
     if (!accessToken) {
         await authenticateSpotify();
     }
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(title)}&type=track&limit=10`, {
+    
+    const url = nextUrl || `https://api.spotify.com/v1/search?q=${encodeURIComponent(title)}&type=track&limit=10`;
+    const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
         },
     });
+    console.log('Search tracks response:', response);
     const data = await response.json();
+    console.log('Search tracks data:', data);
 
-    if (data.tracks && data.tracks.items) {
+    if (data.tracks) {
         const tracksWithGenres = await Promise.all(data.tracks.items.map(async track => {
             const genres = track.artists[0] ? await getArtistGenres(track.artists[0].id) : [];
             return {
@@ -59,9 +63,17 @@ export const searchTracks = async (title) => {
                 genres: genres
             };
         }));
-        return tracksWithGenres;
+        return {
+            tracks: tracksWithGenres,
+            total: data.tracks.total,
+            next: data.tracks.next
+        };
     }
-    return [];
+    return {
+        tracks: [],
+        total: 0,
+        next: null
+    };
 };
 
 /**
@@ -89,6 +101,7 @@ export const exportPlaylistToSpotify = async ({ token, user, playlist, playlistN
             })
         }
     );
+    console.log('Create playlist response:', createPlaylistResponse);
 
     if (!createPlaylistResponse.ok) {
         throw new Error(`Failed to create playlist: ${createPlaylistResponse.status}`);
@@ -119,6 +132,7 @@ export const exportPlaylistToSpotify = async ({ token, user, playlist, playlistN
             body: JSON.stringify({ uris: trackUris })
         }
     );
+    console.log('Add tracks response:', addTracksResponse);
 
     if (!addTracksResponse.ok) {
         throw new Error(`Failed to add tracks: ${addTracksResponse.status}`);

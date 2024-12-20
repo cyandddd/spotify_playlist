@@ -33,7 +33,8 @@ function App() {
   const {
     playlist,
     handleAddToPlaylist,
-    handleRemoveFromPlaylist
+    handleRemoveFromPlaylist,
+    handleClearPlaylist
   } = usePlaylist();
 
   const {
@@ -41,9 +42,21 @@ function App() {
     filteredSongs,
     filters,
     selectedFilters,
+    total,
     handleSearch,
-    handleFilterChange
+    handleFilterChange,
+    handleLoadMore
   } = useSongSearch(playlist);
+
+  /**
+   * Clears all selected filters
+   */
+  const handleClearFilters = () => {
+    // Clear each filter by setting it to empty string
+    Object.keys(selectedFilters).forEach(filter => {
+      handleFilterChange(filter, '');
+    });
+  };
 
   /**
    * Handles the export of the current playlist to Spotify
@@ -78,6 +91,7 @@ function App() {
       <header className="header">
         <SearchBar 
           onSearch={handleSearch}
+          clearFilters={handleClearFilters}
         />
         <div className="filter-options">
           <FilterOptions
@@ -99,6 +113,8 @@ function App() {
             songs={filteredSongs} 
             onAdd={handleAddToPlaylist} 
             playlist={playlist}
+            total={total}
+            onLoadMore={handleLoadMore}
           />
           <Playlist 
             playlist={playlist} 
@@ -110,6 +126,7 @@ function App() {
           onExport={handleExport}
           isAuthenticated={isAuthenticated}
           onAuthenticate={() => setShowLoginModal(true)}
+          onClearPlaylist={handleClearPlaylist}
         />
       </main>
 

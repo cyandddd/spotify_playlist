@@ -39,6 +39,11 @@ export const useSongSearch = (currentPlaylist = []) => {
         return savedSelectedFilters ? JSON.parse(savedSelectedFilters) : defaultSelectedFilters;
     });
 
+    const [total, setTotal] = useState(0);
+    const [nextUrl, setNextUrl] = useState(null);
+    const [currentSearchQuery, setCurrentSearchQuery] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
     // Persist songs and filters to localStorage
     useEffect(() => {
         localStorage.setItem('jamming_songs', JSON.stringify(songs));
@@ -57,11 +62,13 @@ export const useSongSearch = (currentPlaylist = []) => {
     }, [selectedFilters]);
 
     const handleSearch = async (searchQuery) => {
-        const results = await searchTracks(searchQuery);
-        console.log('Raw search results:', results);
-        
-        const songsWithCovers = results.map(song => {
-            return {
+        setIsLoading(true);
+        setCurrentSearchQuery(searchQuery);
+        try {
+            const results = await searchTracks(searchQuery);
+            console.log('Raw search results:', results);
+            
+            const songsWithCovers = results.tracks.map(song => ({
                 name: song.name,
                 artists: song.artists,
                 album: song.album,
@@ -69,21 +76,64 @@ export const useSongSearch = (currentPlaylist = []) => {
                 releaseDate: song.album.release_date,
                 id: song.id,
                 genres: song.genres || []
+            }));
+            
+            setSongs(songsWithCovers);
+            setTotal(results.total);
+            setNextUrl(results.next);
+            
+            // Extract unique filter values
+            const uniqueFilters = {
+                artists: [...new Set(songsWithCovers.map(song => song.artists[0]?.name).filter(Boolean))],
+                albums: [...new Set(songsWithCovers.map(song => song.album.name))],
+                years: [...new Set(songsWithCovers.map(song => song.releaseDate?.split('-')[0]).filter(Boolean))],
+                genres: [...new Set(songsWithCovers.flatMap(song => song.genres))]
             };
-        });
+            
+            setFilters(uniqueFilters);
+            setFilteredSongs(songsWithCovers);
+        } catch (error) {
+            console.error('Error searching tracks:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleLoadMore = async () => {
+        if (!nextUrl || isLoading) return;
         
-        setSongs(songsWithCovers);
-        
-        // Extract unique filter values
-        const uniqueFilters = {
-            artists: [...new Set(songsWithCovers.map(song => song.artists[0]?.name).filter(Boolean))],
-            albums: [...new Set(songsWithCovers.map(song => song.album.name))],
-            years: [...new Set(songsWithCovers.map(song => song.releaseDate?.split('-')[0]).filter(Boolean))],
-            genres: [...new Set(songsWithCovers.flatMap(song => song.genres))]
-        };
-        
-        setFilters(uniqueFilters);
-        setFilteredSongs(songsWithCovers);
+        setIsLoading(true);
+        try {
+            const results = await searchTracks(currentSearchQuery, nextUrl);
+            
+            const newSongsWithCovers = results.tracks.map(song => ({
+                name: song.name,
+                artists: song.artists,
+                album: song.album,
+                albumCover: song.album.images[0]?.url,
+                releaseDate: song.album.release_date,
+                id: song.id,
+                genres: song.genres || []
+            }));
+            
+            setSongs(prevSongs => [...prevSongs, ...newSongsWithCovers]);
+            setNextUrl(results.next);
+            
+            // Update filters with new songs
+            const allSongs = [...songs, ...newSongsWithCovers];
+            const uniqueFilters = {
+                artists: [...new Set(allSongs.map(song => song.artists[0]?.name).filter(Boolean))],
+                albums: [...new Set(allSongs.map(song => song.album.name))],
+                years: [...new Set(allSongs.map(song => song.releaseDate?.split('-')[0]).filter(Boolean))],
+                genres: [...new Set(allSongs.flatMap(song => song.genres))]
+            };
+            
+            setFilters(uniqueFilters);
+        } catch (error) {
+            console.error('Error loading more tracks:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleFilterChange = (filterType, value) => {
@@ -123,8 +173,6 @@ export const useSongSearch = (currentPlaylist = []) => {
 
     // Apply filters and reordering whenever songs, selectedFilters, or playlist changes
     useEffect(() => {
-        console.log('Initial songs:', songs);
-        console.log('Selected filters:', selectedFilters);
         let filtered = songs;
         
         if (selectedFilters.artist) {
@@ -133,21 +181,18 @@ export const useSongSearch = (currentPlaylist = []) => {
                     artist.name.toLowerCase() === selectedFilters.artist.toLowerCase()
                 )
             );
-            console.log('Filtered by artist:', filtered);
         }
         
         if (selectedFilters.album) {
             filtered = filtered.filter(song => 
                 song.album.name.toLowerCase() === selectedFilters.album.toLowerCase()
             );
-            console.log('Filtered by album:', filtered);
         }
         
         if (selectedFilters.year) {
             filtered = filtered.filter(song => 
                 song.releaseDate?.startsWith(selectedFilters.year)
             );
-            console.log('Filtered by year:', filtered);
         }
         
         if (selectedFilters.genre) {
@@ -156,23 +201,22 @@ export const useSongSearch = (currentPlaylist = []) => {
                     genre.toLowerCase() === selectedFilters.genre.toLowerCase()
                 )
             );
-            console.log('Filtered by genre:', filtered);
         }
         
         // Reorder the filtered songs using the current playlist from props
         const reorderedSongs = reorderSongsBasedOnPlaylist(filtered, currentPlaylist);
-        
-        console.log('Filtered songs updated:', reorderedSongs);
-        
         setFilteredSongs(reorderedSongs);
     }, [songs, selectedFilters, currentPlaylist]);
 
     return {
-        songs,
+        songs: filteredSongs,
         filteredSongs,
         filters,
         selectedFilters,
+        total,
+        isLoading,
         handleSearch,
-        handleFilterChange
+        handleFilterChange,
+        handleLoadMore
     };
 }; 

@@ -4,6 +4,7 @@ html, body {
     min-height: 100vh;
     background: linear-gradient(135deg, #f2fbfe 0%, #ebb6c1 100%);
     background-attachment: fixed;
+    overflow: hidden;
 }
 
 .App {
@@ -65,11 +66,17 @@ html, body {
     max-width: 100%;
 }
 
-.exportButton {
+.button-group {
     position: fixed;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 100;
+}
+
+.exportButton {
     background: #ebbc4b;
     color: #f2fbfe;
     padding: 0.75rem 2rem;
@@ -87,8 +94,27 @@ html, body {
 
 .exportButton:hover {
     background: #e85281;
-    transform: translateX(-50%) translateY(-2px);
+    transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(235, 188, 75, 0.4);
+}
+
+.exportButton.loggedOut {
+    opacity: 0.7;
+}
+
+.exportButton.loggedOut:hover {
+    opacity: 1;
+    background: #e85281;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(235, 188, 75, 0.4);
+}
+
+.exportButton.clearButton {
+    background: rgba(184, 184, 184, 0.8);
+}
+
+.exportButton.clearButton:hover {
+    background: rgba(125, 125, 125, 0.8);
 }
 
 .content-wrapper h2 {

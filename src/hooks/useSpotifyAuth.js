@@ -50,9 +50,13 @@ export const useSpotifyAuth = () => {
                     'Authorization': `Bearer ${accessToken}`
                 }
             });
+            console.log('User profile response:', response);
             if (response.ok) {
                 const userData = await response.json();
+                console.log('User profile data:', userData);
                 setUser(userData);
+            } else {
+                console.error('Failed to fetch user profile:', response.status, response.statusText);
             }
         } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -79,9 +83,6 @@ export const useSpotifyAuth = () => {
         setUser(null);
         setToken('');
         setIsAuthenticated(false);
-        
-        // Don't reload the page to preserve state
-        // window.location.reload();
     };
 
     return {

@@ -1,31 +1,23 @@
 import React, { useState } from 'react';
 import { APP_CONFIG, ERROR_MESSAGES } from '../constants/appConfig';
-import useDebounce from '../hooks/useDebounce';
 import styles from '../styles/SearchBar.module.css';
 
-// SearchBar component handles song search with debounced input
-function SearchBar({ onSearch }) {
+// SearchBar component handles song search on form submission
+function SearchBar({ onSearch, clearFilters }) {
   // Track search input value
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Debounce search to avoid too many API calls
-  const debouncedSearch = useDebounce((value) => {
-    if (value.length >= APP_CONFIG.SEARCH.MIN_QUERY_LENGTH) {
-      onSearch(value);
-    }
-  }, APP_CONFIG.SEARCH.DEBOUNCE_TIME);
-
-  // Handle input changes and trigger debounced search
+  // Handle input changes
   const handleInputChange = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
-    debouncedSearch(value);
   };
 
   // Handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     if (searchTerm.length >= APP_CONFIG.SEARCH.MIN_QUERY_LENGTH) {
+      clearFilters?.(); // Clear filters before performing search
       onSearch(searchTerm);
     }
   };

@@ -29,10 +29,12 @@ const FilterOptions = ({ filters = {}, selectedFilters = {}, onFilterChange }) =
   const filterConfigs = Object.entries(filters).map(([name, options]) => ({
     name,
     label: name.charAt(0).toUpperCase() + name.slice(1),
-    options: Array.isArray(options) ? options.map(value => ({
-      value,
-      label: value
-    })) : []
+    options: Array.isArray(options) ? options
+      .sort((a, b) => a.toString().localeCompare(b.toString(), undefined, { numeric: true }))
+      .map(value => ({
+        value,
+        label: value
+      })) : []
   }));
 
   return (
