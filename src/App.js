@@ -26,7 +26,6 @@ function App() {
     user,
     token,
     isAuthenticated,
-    handleLogin,
     handleLogout
   } = useSpotifyAuth();
 
@@ -38,7 +37,6 @@ function App() {
   } = usePlaylist();
 
   const {
-    songs,
     filteredSongs,
     filters,
     selectedFilters,

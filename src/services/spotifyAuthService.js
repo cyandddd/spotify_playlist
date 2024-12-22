@@ -4,7 +4,7 @@
 
 export const getAccessToken = async (code) => {
     try {
-        const verifier = localStorage.getItem("verifier");
+        // const verifier = localStorage.getItem("verifier");
         
         const params = new URLSearchParams();
         params.append("client_id", process.env.REACT_APP_SPOTIFY_CLIENT_ID);

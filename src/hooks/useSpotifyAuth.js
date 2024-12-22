@@ -63,10 +63,6 @@ export const useSpotifyAuth = () => {
         }
     };
 
-    const handleLogin = () => {
-        window.location.href = '/auth/login';
-    };
-
     const handleLogout = () => {
         // Only remove Spotify-specific items
         localStorage.removeItem('spotify_access_token');
@@ -89,7 +85,6 @@ export const useSpotifyAuth = () => {
         user,
         token,
         isAuthenticated,
-        handleLogin,
         handleLogout,
         fetchUserProfile
     };
