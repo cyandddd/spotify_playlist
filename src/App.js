@@ -10,6 +10,8 @@ import { useSpotifyAuth } from './hooks/useSpotifyAuth';
 import { usePlaylist } from './hooks/usePlaylist';
 import { useSongSearch } from './hooks/useSongSearch';
 import { exportPlaylistToSpotify } from './services/spotifyApiService';
+import { handleClearFilters } from './utils/filters';
+import { handleExport } from './services/spotifyExportService';
 import './styles/Layout.css';
 
 /**
@@ -17,19 +19,35 @@ import './styles/Layout.css';
  * and Spotify integration.
  * 
  * @component
- * @returns {JSX.Element} The rendered App component
+ * @returns {JSX.Element} The rendered App component containing the full application UI
  */
 function App() {
+  // State for controlling login modal visibility
   const [showLoginModal, setShowLoginModal] = useState(false);
   
+  /**
+   * Hook for handling Spotify authentication
+   * @returns {Object} Authentication state and methods
+   * @property {Object} user - The authenticated user's data
+   * @property {string} token - Spotify access token
+   * @property {boolean} isAuthenticated - Whether user is authenticated
+   * @property {Function} handleLogout - Logout handler function
+   */
   const {
     user,
     token,
-    isAuthenticated,
-    handleLogin,
+    isAuthenticated, 
     handleLogout
   } = useSpotifyAuth();
 
+  /**
+   * Hook for managing playlist operations
+   * @returns {Object} Playlist state and methods
+   * @property {Array<Object>} playlist - Array of song objects in playlist
+   * @property {Function} handleAddToPlaylist - Function to add song to playlist
+   * @property {Function} handleRemoveFromPlaylist - Function to remove song from playlist
+   * @property {Function} handleClearPlaylist - Function to clear entire playlist
+   */
   const {
     playlist,
     handleAddToPlaylist,
@@ -37,8 +55,19 @@ function App() {
     handleClearPlaylist
   } = usePlaylist();
 
+  /**
+   * Hook for managing song search and filtering
+   * @param {Array<Object>} playlist - Current playlist for filtering
+   * @returns {Object} Search/filter state and methods
+   * @property {Array<Object>} filteredSongs - Filtered song results
+   * @property {Object} filters - Available filter options
+   * @property {Object} selectedFilters - Currently selected filters
+   * @property {number} total - Total number of results
+   * @property {Function} handleSearch - Search handler function
+   * @property {Function} handleFilterChange - Filter change handler
+   * @property {Function} handleLoadMore - Load more results handler
+   */
   const {
-    songs,
     filteredSongs,
     filters,
     selectedFilters,
@@ -48,50 +77,12 @@ function App() {
     handleLoadMore
   } = useSongSearch(playlist);
 
-  /**
-   * Clears all selected filters
-   */
-  const handleClearFilters = () => {
-    // Clear each filter by setting it to empty string
-    Object.keys(selectedFilters).forEach(filter => {
-      handleFilterChange(filter, '');
-    });
-  };
-
-  /**
-   * Handles the export of the current playlist to Spotify
-   */
-  const handleExport = async () => {
-    if (!isAuthenticated || !user || playlist.length === 0) {
-      alert('Please log in and add songs to your playlist before exporting');
-      return;
-    }
-
-    const playlistName = prompt('Enter a name for your playlist:', 
-      `My Playlist ${new Date().toLocaleDateString()}`);
-    
-    if (!playlistName) return;
-
-    try {
-      await exportPlaylistToSpotify({
-        token,
-        user,
-        playlist,
-        playlistName
-      });
-      alert(`Playlist "${playlistName}" successfully exported to Spotify!`);
-    } catch (error) {
-      console.error('Export error:', error);
-      alert(`Failed to export playlist: ${error.message}`);
-    }
-  };
-
   return (
     <div className="App">
       <header className="header">
         <SearchBar 
           onSearch={handleSearch}
-          clearFilters={handleClearFilters}
+          clearFilters={() => handleClearFilters(selectedFilters, handleFilterChange)}
         />
         <div className="filter-options">
           <FilterOptions
@@ -123,7 +114,7 @@ function App() {
         </div>
         
         <SpotifyIntegration 
-          onExport={handleExport}
+          onExport={() => handleExport({ isAuthenticated, user, playlist, token, exportPlaylistToSpotify })}
           isAuthenticated={isAuthenticated}
           onAuthenticate={() => setShowLoginModal(true)}
           onClearPlaylist={handleClearPlaylist}
